@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
-
+    android.
+    <item
+        android:id="@+id/stroke"
+        android:icon="@drawable/paintbrush"
+        android:title="@string/Stroke"
+        app:showAsAction="always" />
+    <item
+        android:icon="@drawable/color"
+        android:title="@string/Color"
+        app:showAsAction="always" />
     <item
         android:id="@+id/clear"
-        android:title="Clear" />
+        android:icon="@drawable/cancel"
+        android:title="clear"
+        app:showAsAction="always" />
 </menu>

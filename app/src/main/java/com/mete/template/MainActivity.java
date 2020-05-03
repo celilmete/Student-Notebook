@@ -15,8 +15,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void takeNote(View view) {
-        Intent intent = new Intent(this,HandWrite.class);
-        startActivity(intent);
+        startActivity(new Intent(this,HandWrite.class));
+    }
+
+    public void tasks(View view) {
+        startActivity(new Intent(this,Todo.class));
     }
 
 }

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Switch;
 
 public class HandWrite extends AppCompatActivity {
     PaintView paintView;
@@ -31,6 +32,13 @@ public class HandWrite extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.clear) {
             paintView.clear();
+        }
+        switch(item.getItemId()) {
+
+            case R.id.clear : paintView.clear();
+            break;
+
+
         }
 
         return super.onOptionsItemSelected(item);
