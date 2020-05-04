@@ -22,4 +22,8 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(this,Todo.class));
     }
 
+    public void schedule(View view) {
+        startActivity(new Intent(this,Schedule.class));
+    }
+
 }
