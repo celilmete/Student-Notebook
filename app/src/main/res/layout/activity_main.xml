@@ -35,6 +35,7 @@
         android:id="@+id/file"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:onClick="uploadPhoto"
         app:layout_constraintBottom_toBottomOf="@+id/camera"
         app:layout_constraintEnd_toStartOf="@+id/camera"
         app:layout_constraintHorizontal_bias="0.0"
