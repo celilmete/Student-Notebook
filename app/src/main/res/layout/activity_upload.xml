@@ -66,4 +66,11 @@
         android:layout_height="wrap_content"
         android:text="Message from the Server ..." />
 
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="takePic"
+        android:text="Open Camera" />
+
 </LinearLayout>
