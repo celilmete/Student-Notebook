@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void tasks(View view) {
-        startActivity(new Intent(this,Todo.class));
+        startActivity(new Intent(this, DashboardActivity.class));
     }
 
     public void schedule(View view) {

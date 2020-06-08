@@ -6,26 +6,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Application;
 import android.content.DialogInterface;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mete.template.DTO.ToDo;
 
 import java.util.ArrayList;
 
-public class Todo extends AppCompatActivity {
+public class TodoActivity extends AppCompatActivity {
     DBhandler dBhandler;
-    Todo activity;
+    TodoActivity activity;
     RecyclerView recyclerView;
     FloatingActionButton add_task;
 
@@ -45,6 +41,7 @@ public class Todo extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
+                dialog.setTitle("Add To Do");
                 View view = getLayoutInflater().inflate(R.layout.diaolog_todo,null);
                 final EditText toDoName = findViewById(R.id.dialog_text);
                 dialog.setView(view);
@@ -84,9 +81,9 @@ public class Todo extends AppCompatActivity {
 
     class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>{
         ArrayList<ToDo> list;
-        Todo activity;
+        TodoActivity activity;
 
-        public TodoAdapter(Todo activity,ArrayList<ToDo> list) {
+        public TodoAdapter(TodoActivity activity, ArrayList<ToDo> list) {
             this.list = list;
             this.activity = activity;
         }
@@ -116,7 +113,7 @@ public class Todo extends AppCompatActivity {
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 toDoName = itemView.findViewById(R.id.todo_name);
-               // menu = itemView.findViewById(R.id.iv_menu);
+                // menu = itemView.findViewById(R.id.iv_menu);
             }
         }
     }

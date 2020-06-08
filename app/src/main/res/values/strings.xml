@@ -5,4 +5,8 @@
     <string name="Stroke">stroke</string>
     <string name="Edit">Edit</string>
     <string name="Save">Save</string>
+    <string name="edit">edit</string>
+    <string name="delete">delete</string>
+    <string name="mark_as_completed">completed</string>
+    <string name="reset">reset</string>
 </resources>
