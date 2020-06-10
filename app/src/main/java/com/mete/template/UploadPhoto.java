@@ -1,6 +1,8 @@
 package com.mete.template;
 
 import android.Manifest;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -39,11 +41,15 @@ public class UploadPhoto extends AppCompatActivity {
     private static final int CAMERA_REQUEST = 1888;
     private ImageView imageView;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
+    //    ClipData clipData;
+    ClipboardManager clipboard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
+        clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+
     }
 
     public void connectServer(View v) {
@@ -106,18 +112,20 @@ public class UploadPhoto extends AppCompatActivity {
                     public void run() {
                         TextView responseText = findViewById(R.id.response_body);
                         try {
-//                            System.out.println(response.body().string());
-//                            Toast.makeText(getApplicationContext(),
-//                                    response.body().string(),
-//                                    Toast.LENGTH_SHORT)
-//                                    .show();
-                            responseText.setText(response.body().string());
+                            String responseString = new String(response.body().string());
+                            clipboard.setPrimaryClip(ClipData.newPlainText("text", responseString));
+                            Toast.makeText(getApplicationContext(),
+                                    "Copied to Clipboard",
+                                    Toast.LENGTH_SHORT)
+                                    .show();
+                            responseText.setText(responseString);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
                 });
             }
+
         });
     }
 
@@ -137,7 +145,7 @@ public class UploadPhoto extends AppCompatActivity {
             selectedImagePath = getPath(getApplicationContext(), uri);
             EditText imgPath = findViewById(R.id.imgPath);
             imgPath.setText(selectedImagePath);
-            Toast.makeText(getApplicationContext(), selectedImagePath, Toast.LENGTH_LONG).show();
+//            Toast.makeText(getApplicationContext(), selectedImagePath, Toast.LENGTH_LONG).show();
         }
     }
 
