@@ -73,4 +73,10 @@
         android:onClick="takePic"
         android:text="Open Camera" />
 
+    <TextView
+        android:id="@+id/response_body"
+        android:layout_width="match_parent"
+        android:layout_height="246dp"
+        android:text="Empty" />
+
 </LinearLayout>

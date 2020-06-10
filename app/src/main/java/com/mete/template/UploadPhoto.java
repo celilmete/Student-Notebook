@@ -104,8 +104,13 @@ public class UploadPhoto extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        TextView responseText = findViewById(R.id.responseText);
+                        TextView responseText = findViewById(R.id.response_body);
                         try {
+//                            System.out.println(response.body().string());
+//                            Toast.makeText(getApplicationContext(),
+//                                    response.body().string(),
+//                                    Toast.LENGTH_SHORT)
+//                                    .show();
                             responseText.setText(response.body().string());
                         } catch (IOException e) {
                             e.printStackTrace();
