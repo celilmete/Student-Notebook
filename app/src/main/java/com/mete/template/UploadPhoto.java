@@ -26,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Date;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -36,6 +37,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import com.mete.template.EditNoteActivity;
+
 public class UploadPhoto extends AppCompatActivity {
     String selectedImagePath;
     private static final int CAMERA_REQUEST = 1888;
@@ -43,13 +46,16 @@ public class UploadPhoto extends AppCompatActivity {
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
     //    ClipData clipData;
     ClipboardManager clipboard;
+    private NotesDao dao;
+    Long date;
+    Note temp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
         clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-
+        dao = NotesDB.getInstance(this).notesDao();
     }
 
     public void connectServer(View v) {
@@ -118,6 +124,9 @@ public class UploadPhoto extends AppCompatActivity {
                                     "Copied to Clipboard",
                                     Toast.LENGTH_SHORT)
                                     .show();
+                            date = new Date().getTime();
+                            temp = new Note(responseString, date);
+                            dao.insertNote(temp);
                             responseText.setText(responseString);
                         } catch (IOException e) {
                             e.printStackTrace();

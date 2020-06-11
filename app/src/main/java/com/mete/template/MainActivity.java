@@ -42,6 +42,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(this, UploadPhoto.class));
     }
 
+    public void notes(View view) {
+        startActivity(new Intent(this, NoteActivity.class));
+    }
+
 
     public void checkPermission() {
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)

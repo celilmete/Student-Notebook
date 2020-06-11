@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature android:name="android.hardware.camera"></uses-feature>
 
@@ -20,7 +20,9 @@
         <activity android:name=".TodoActivity" />
         <activity android:name=".Schedule" />
         <activity android:name=".HandWrite" />
-        <activity android:name=".UploadPhoto"/>
+        <activity android:name=".UploadPhoto" />
+        <activity android:name=".NoteActivity"/>
+        <activity android:name=".EditNoteActivity"/>
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait">
