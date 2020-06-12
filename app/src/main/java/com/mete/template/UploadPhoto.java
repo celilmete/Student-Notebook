@@ -66,6 +66,8 @@ public class UploadPhoto extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_TAKE_PHOTO = 1;
     String currentPhotoPath;
+    String serverIP = "167.99.9.212";
+    String port = "5000";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,10 +78,10 @@ public class UploadPhoto extends AppCompatActivity {
     }
 
     public void connectServer(View v) {
-        EditText ipv4AddressView = findViewById(R.id.IPAddress);
-        String ipv4Address = ipv4AddressView.getText().toString();
-        EditText portNumberView = findViewById(R.id.portNumber);
-        String portNumber = portNumberView.getText().toString();
+//        EditText ipv4AddressView = findViewById(R.id.IPAddress);
+        String ipv4Address = serverIP;
+//        EditText portNumberView = findViewById(R.id.portNumber);
+        String portNumber = port;
 
         String postUrl = "http://" + ipv4Address + ":" + portNumber + "/";
 
@@ -133,7 +135,7 @@ public class UploadPhoto extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        TextView responseText = findViewById(R.id.response_body);
+                        TextView responseText = findViewById(R.id.responseText);
                         try {
                             String responseString = new String(response.body().string());
                             clipboard.setPrimaryClip(ClipData.newPlainText("text", responseString));
@@ -252,6 +254,7 @@ public class UploadPhoto extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), "IO error", Toast.LENGTH_SHORT).show();
         }
+
 //        finish();
     }
 
