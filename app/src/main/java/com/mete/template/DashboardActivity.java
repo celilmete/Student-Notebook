@@ -164,7 +164,7 @@ public class DashboardActivity extends AppCompatActivity {
                                     dialog.setMessage("Do you want to delete this task ?");
                                     dialog.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
                                         @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                        public void onClick(DialogInterface dialogInterface, int J) {
                                             activity.dbHandler.deleteToDo(list.get(i).getId());
                                             activity.refreshList();
                                         }

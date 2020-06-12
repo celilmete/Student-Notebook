@@ -12,7 +12,7 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "notes")
 public class Note {
     @PrimaryKey(autoGenerate = true)
-    private int id; // default value
+    public int id; // default value
     @ColumnInfo(name = "text")
     private String noteText;
     @ColumnInfo(name = "date")
