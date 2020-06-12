@@ -1,6 +1,7 @@
 package com.mete.template;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentUris;
@@ -10,23 +11,36 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -49,6 +63,9 @@ public class UploadPhoto extends AppCompatActivity {
     private NotesDao dao;
     Long date;
     Note temp;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    static final int REQUEST_TAKE_PHOTO = 1;
+    String currentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +155,7 @@ public class UploadPhoto extends AppCompatActivity {
         });
     }
 
+
     public void selectImage(View v) {
         Intent intent = new Intent();
         intent.setType("*/*");
@@ -146,16 +164,107 @@ public class UploadPhoto extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int reqCode, int resCode, Intent data) {
-        super.onActivityResult(reqCode, resCode, data);
-        if (resCode == RESULT_OK && data != null) {
-            Uri uri = data.getData();
-
-            selectedImagePath = getPath(getApplicationContext(), uri);
-            EditText imgPath = findViewById(R.id.imgPath);
-            imgPath.setText(selectedImagePath);
-//            Toast.makeText(getApplicationContext(), selectedImagePath, Toast.LENGTH_LONG).show();
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_CAMERA_PERMISSION_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+            } else {
+                Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
+            }
         }
+    }
+
+    @Override
+    protected void onActivityResult(int reqCode, int resCode, Intent data) {
+        if (reqCode == CAMERA_REQUEST && resCode == Activity.RESULT_OK) {
+            Bundle extras = data.getExtras();
+//            Log.e("URI",imageUri.toString());
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+//            imageView.setImageBitmap(imageBitmap);
+//            saving image
+            saveImage(imageBitmap);
+        } else {
+            super.onActivityResult(reqCode, resCode, data);
+            if (resCode == RESULT_OK && data != null) {
+                Uri uri = data.getData();
+
+                selectedImagePath = getPath(getApplicationContext(), uri);
+                EditText imgPath = findViewById(R.id.imgPath);
+                imgPath.setText(selectedImagePath);
+//            Toast.makeText(getApplicationContext(), selectedImagePath, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    public void saveImage(Bitmap bitmap) {
+        File folder = new File(Environment.getExternalStorageDirectory().getPath().toString() + "/Student Notebook");
+        boolean success = false;
+        System.out.println(Environment.getExternalStorageDirectory().getPath().toString());
+        if (!folder.exists()) {
+            success = folder.mkdirs();
+        }
+        System.out.println(success + "folder");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm", Locale.US);
+        Date date = new Date();
+        String fileName = formatter.format(date) + ".png";
+        File file = new File((Environment.getExternalStorageDirectory().getPath().toString()) + "/Student Notebook/" + fileName);
+        if (!file.exists()) {
+            try {
+                success = file.createNewFile();
+            } catch (IOException e) {
+                System.out.println("lol");
+                e.printStackTrace();
+            }
+        }
+        System.out.println(success + "file");
+        FileOutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(file);
+            System.out.println(outputStream);
+            Bitmap well = bitmap;
+            Bitmap save = Bitmap.createBitmap(320, 480, Bitmap.Config.ARGB_8888);
+            Paint paint = new Paint();
+            paint.setColor(Color.WHITE);
+            Canvas now = new Canvas(save);
+            now.drawRect(new Rect(0, 0, 320, 480), paint);
+            now.drawBitmap(well, new Rect(0, 0, well.getWidth(), well.getHeight()), new Rect(0, 0, 320, 480), null);
+            if (save == null) {
+                System.out.println("NULL bitmap save\n");
+            }
+            System.out.println("lol");
+            save.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            scanFile(file.getAbsolutePath());
+        } catch (NullPointerException e) {
+            System.out.println("lol");
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Null error", Toast.LENGTH_SHORT).show();
+        } catch (FileNotFoundException e) {
+            System.out.println("lol");
+
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "File error", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            System.out.println("lol");
+
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "IO error", Toast.LENGTH_SHORT).show();
+        }
+//        finish();
+    }
+
+    public void scanFile(String path) {
+
+        MediaScannerConnection.scanFile(UploadPhoto.this,
+                new String[]{path}, null,
+                new MediaScannerConnection.OnScanCompletedListener() {
+
+                    public void onScanCompleted(String path, Uri uri) {
+                        Log.i("TAG", "Finished scanning " + path);
+                    }
+                });
     }
 
     // Implementation of the getPath() method and all its requirements is taken from the StackOverflow Paul Burke's answer: https://stackoverflow.com/a/20559175/5426539
@@ -264,4 +373,51 @@ public class UploadPhoto extends AppCompatActivity {
             startActivityForResult(cameraIntent, CAMERA_REQUEST);
         }
     }
+//    public void takePic2(View view){
+//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        imageUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(),"fname_" +
+//                String.valueOf(System.currentTimeMillis()) + ".jpg"));
+//        intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, imageUri);
+//        startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+//    }
+
+//    public void dispatchTakePictureIntent(View view) {
+//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        // Ensure that there's a camera activity to handle the intent
+//        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+//            // Create the File where the photo should go
+//            File photoFile = null;
+//            try {
+//                photoFile = createImageFile();
+//            } catch (IOException ex) {
+//                // Error occurred while creating the File
+//                ex.printStackTrace();
+//            }
+//            // Continue only if the File was successfully created
+//            if (photoFile != null) {
+//                Uri photoURI = FileProvider.getUriForFile(this,
+//                        "com.example.android.fileprovider",
+//                        photoFile);
+//                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+//                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+//            }
+//        }
+//    }
+
+//    private File createImageFile() throws IOException {
+//        // Create an image file name
+//        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+//        String imageFileName = "JPEG_" + timeStamp + "_";
+//        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+//        File image = File.createTempFile(
+//                imageFileName,  /* prefix */
+//                ".jpg",         /* suffix */
+//                storageDir      /* directory */
+//        );
+//
+//        // Save a file: path for use with ACTION_VIEW intents
+//        currentPhotoPath = image.getAbsolutePath();
+//        return image;
+//    }
+
 }

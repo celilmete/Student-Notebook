@@ -56,17 +56,17 @@ public class PaintView extends View {
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        bitmap = Bitmap.createBitmap(getWidth(),getHeight(), Bitmap.Config.ARGB_8888);
+        bitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         bitmapCanvas = new Canvas(bitmap);
         bitmap.eraseColor(Color.WHITE);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawBitmap(bitmap,0,0,paintScreen);
+        canvas.drawBitmap(bitmap, 0, 0, paintScreen);
 
-        for (Integer key:pathMap.keySet()) {
-            canvas.drawPath(pathMap.get(key),paintLine);
+        for (Integer key : pathMap.keySet()) {
+            canvas.drawPath(pathMap.get(key), paintLine);
         }
 
     }
@@ -81,9 +81,9 @@ public class PaintView extends View {
             touchStarted(event.getX(actionIndex),
                     event.getY(actionIndex),
                     event.getPointerId(actionIndex));
-        }else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP) {
+        } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP) {
             touchEnded(event.getPointerId(actionIndex));
-        }else{
+        } else {
             touchMoved(event);
         }
 
@@ -94,7 +94,7 @@ public class PaintView extends View {
 
     private void touchMoved(MotionEvent event) {
 
-        for (int i = 0 ; i < event.getPointerCount() ; i++) {
+        for (int i = 0; i < event.getPointerCount(); i++) {
             int pointerId = event.getPointerId(i);
             int pointerIndex = event.findPointerIndex(pointerId);
 
@@ -110,15 +110,15 @@ public class PaintView extends View {
                 float deltaY = Math.abs(newY - point.y);
 
                 //if the disctance is enough
-                if(deltaX >= TOUCH_TOLERANCE || deltaY >= TOUCH_TOLERANCE) {
+                if (deltaX >= TOUCH_TOLERANCE || deltaY >= TOUCH_TOLERANCE) {
                     //move the path to new location
-                    path.quadTo(point.x , point.y ,
-                            (newX + point.x) / 2 ,
-                            (newY + point.y ) / 2);
+                    path.quadTo(point.x, point.y,
+                            (newX + point.x) / 2,
+                            (newY + point.y) / 2);
 
                     //store the new results
-                    point.x = (int)newX;
-                    point.y = (int)newY;
+                    point.x = (int) newX;
+                    point.y = (int) newY;
 
                 }
             }
@@ -126,33 +126,41 @@ public class PaintView extends View {
 
     }
 
-    public void clear( ) {
+    public void clear() {
         pathMap.clear(); // removers all the paths
         previousPointMap.clear();
         bitmap.eraseColor(Color.WHITE);
         invalidate();//refresh the screen
     }
 
+    public Bitmap getBitmap() {
+        this.setDrawingCacheEnabled(true);
+        this.buildDrawingCache();
+        Bitmap bitmap = Bitmap.createBitmap(this.getDrawingCache());
+        this.setDrawingCacheEnabled(false);
+        return bitmap;
+    }
+
     private void touchEnded(int pointerId) {
         Path path = pathMap.get(pointerId);//get the corresponding path
-        bitmapCanvas.drawPath(path,paintLine); // draw bitmap canvas
+        bitmapCanvas.drawPath(path, paintLine); // draw bitmap canvas
     }
 
     private void touchStarted(float x, float y, int pointerId) {
         Path path; //store the path for given touch
         Point point; //last point touched
 
-        if (pathMap.containsKey(pointerId)){
+        if (pathMap.containsKey(pointerId)) {
             path = pathMap.get(pointerId);
-            point=previousPointMap.get(pointerId);
-        }else{
+            point = previousPointMap.get(pointerId);
+        } else {
             path = new Path();
-            pathMap.put(pointerId,path);
+            pathMap.put(pointerId, path);
             point = new Point();
-            previousPointMap.put(pointerId,point);
+            previousPointMap.put(pointerId, point);
         }
 
-        path.moveTo(x,y);
+        path.moveTo(x, y);
         point.x = (int) x;
         point.y = (int) y;
     }
